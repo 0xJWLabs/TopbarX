@@ -567,6 +567,9 @@ end
 	@return Janitor
 ]=]
 Private.Remove = Remove
+Private.remove = Remove
+Private.Destroy = Remove
+Private.destroy = Remove
 
 --[=[
 	Removes an object from the Janitor without running a cleanup.

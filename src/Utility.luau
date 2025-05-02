@@ -1,6 +1,7 @@
 -- Just generic utility functions which I use and repeat across all my projects
 
 -- LOCAL
+local Types = require(script.Parent.Types)
 local Utility = {}
 local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
@@ -507,6 +508,20 @@ function Utility.joinFeature(originalIcon, parentIcon, iconsArray, scrollingFram
 		end
 		updateAlignent()
 	end)
+end
+
+function Utility.FixImage(imageId: string | number | nil)
+	if imageId == nil then
+		return ""
+	end
+
+	return tonumber(imageId) and `rbxassetid://{imageId}` or imageId
+end
+
+function Utility.FixImageTable(image: Types.Image)
+	image.Image = Utility.FixImage(image.Image)
+
+	return image
 end
 
 return Utility

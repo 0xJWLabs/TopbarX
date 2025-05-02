@@ -3,6 +3,7 @@
 -- This contains the core components of the icon such as the button, image, label and notice. It's
 -- also responsible for handling the automatic resizing of the widget (based upon image visibility and text length)
 local Types = require(script.Parent.Parent.Types)
+local Utility = require(script.Parent.Parent.Utility)
 
 return function(icon: Types.Icon, Icon: Types.IconContainer)
 	local widget = Instance.new("Frame")
@@ -369,7 +370,7 @@ return function(icon: Types.Icon, Icon: Types.IconContainer)
 	icon:setBehaviour("Indicator", "Visible", handleLabelAndImageChanges)
 	icon:setBehaviour("IconImageRatio", "AspectRatio", handleLabelAndImageChanges)
 	icon:setBehaviour("IconImage", "Image", function(value)
-		local textureId = (tonumber(value) and "http://www.roblox.com/asset/?id=" .. value) or value or ""
+		local textureId = Utility.FixImage(value)
 		if iconImage.Image ~= textureId then
 			handleLabelAndImageChanges()
 		end

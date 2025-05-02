@@ -109,6 +109,7 @@ function Icon.getIconByUID(UID)
 	if match then
 		return match
 	end
+	return nil
 end
 
 function Icon.getIcon(nameOrUID)
@@ -121,6 +122,7 @@ function Icon.getIcon(nameOrUID)
 			return icon
 		end
 	end
+	return nil
 end
 
 function Icon.setTopbarEnabled(bool, isInternal)
@@ -153,10 +155,14 @@ function Icon.setDisplayOrder(int)
 end
 
 -- SETUP
+local Topbar = Instance.new("Folder")
+Topbar.Name = "Topbar"
+Topbar.Parent = playerGui
+
 task.defer(Gamepad.start, Icon)
 task.defer(Overflow.start, Icon)
 for _, screenGui in Icon.container do
-	screenGui.Parent = playerGui
+	screenGui.Parent = Topbar
 end
 if Icon.isOldTopbar then
 	Icon.modifyBaseTheme(require(themes.Classic))
@@ -379,7 +385,7 @@ function Icon.new()
 	local sourcePath = string.split(source, ".")
 	local origin = game
 	local originsScreenGui
-	for i, sourceName in sourcePath do
+	for _, sourceName in sourcePath do
 		origin = origin:FindFirstChild(sourceName)
 		if not origin then
 			break
@@ -395,7 +401,6 @@ function Icon.new()
 	end
 
 	-- Additional children behaviour when toggled (mostly notices)
-	local noticeLabel = self:getInstance("NoticeLabel")
 	self.toggled:Connect(function(isSelected)
 		self.noticeChanged:Fire(self.totalNotices)
 		for childIconUID, _ in self.childIconsDict do
@@ -541,7 +546,6 @@ function Icon:getInstance(name)
 			end
 			-- If the child is a fake placeholder instance (such as dropdowns, notices, etc)
 			-- then its important we scan the real original instance instead of this clone
-			local previousChild = child
 			local realChild = Themes.getRealInstance(child)
 			if realChild then
 				child = realChild
@@ -713,11 +717,21 @@ end
 Icon.disableStateOverlay = Icon.disableOverlay
 
 function Icon:setImage(imageId, iconState)
-	self:modifyTheme({ "IconImage", "Image", imageId, iconState })
+	if typeof(imageId) == "table" then
+		imageId = Utility.FixImageTable(imageId)
+		local Properties = {}
+		for property, value in imageId do
+			table.insert(Properties, { "IconImage", property, value, iconState })
+		end
+		self:modifyTheme(Properties)
+	else
+		self:modifyTheme({ "IconImage", "Image", imageId, iconState })
+	end
 	return self
 end
 
 function Icon:setImageRectOffset(offset, iconState)
+	print(offset)
 	self:modifyTheme({ "IconImage", "ImageRectOffset", offset, iconState })
 	return self
 end
@@ -751,7 +765,7 @@ function Icon:align(leftCenterOrRight, isFromParentIcon)
 	if direction ~= "left" and direction ~= "center" and direction ~= "right" then
 		direction = "left"
 	end
-	local screenGui = (direction == "center" and Icon.container.TopbarCentered) or Icon.container.TopbarStandard
+	local screenGui = (direction == "center" and Icon.container.Center) or Icon.container.Standard
 	local holders = screenGui.Holders
 	local finalDirection = string.upper(string.sub(direction, 1, 1)) .. string.sub(direction, 2)
 	if not isFromParentIcon then
@@ -861,7 +875,7 @@ function Icon:_updateSelectionInstances()
 	end
 end
 
-function Icon:_setToggleItemsVisible(bool, fromSource, sourceIcon)
+function Icon:_setToggleItemsVisible(bool, _, sourceIcon)
 	for toggleItem, _ in self.toggleItems do
 		if not sourceIcon or sourceIcon == self or sourceIcon.toggleItems[toggleItem] == nil then
 			local property = "Visible"

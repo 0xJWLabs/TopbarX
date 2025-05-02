@@ -109,6 +109,12 @@ type IconProperties = {
 	indicator: typeof(require(script.Parent.Elements.Indicator)(nil, nil)),
 }
 
+export type Image = {
+	Image: string | number,
+	ImageRectOffset: Vector2,
+	ImageRectSize: Vector2,
+}
+
 export type Icon = IconEvents & IconProperties & {
 	name: string,
 	isSelected: boolean,
@@ -132,7 +138,7 @@ export type Icon = IconEvents & IconProperties & {
 	notify: (self: Icon, clearNoticeEvent: Signal.Signal<>?) -> Icon,
 	clearNotices: (self: Icon) -> Icon,
 	disableOverlay: (self: Icon, enabled: boolean) -> Icon,
-	setImage: (self: Icon, imageId: string | number, iconState: IconState?) -> Icon,
+	setImage: (self: Icon, imageId: Image | string | number, iconState: IconState?) -> Icon,
 	setImageRectOffset: (self: Icon, offset: Vector2, iconState: IconState?) -> Icon,
 	setImageRectSize: (self: Icon, rectSize: Vector2, iconState: IconState?) -> Icon,
 	setLabel: (self: Icon, text: string, iconState: IconState?) -> Icon,

@@ -10,7 +10,7 @@ return function(Icon)
 	end
 	local screenGui = Instance.new("ScreenGui")
 	screenGui:SetAttribute("StartInset", startInset)
-	screenGui.Name = "TopbarStandard"
+	screenGui.Name = "Standard"
 	screenGui.Enabled = true
 	screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	screenGui.IgnoreGuiInset = true
@@ -42,7 +42,7 @@ return function(Icon)
 	local function updateCenteredHoldersHeight()
 		holdersCenter.Size = UDim2.new(1, 0, 0, GuiService.TopbarInset.Height + ySizeOffset)
 	end
-	screenGuiCenter.Name = "TopbarCentered"
+	screenGuiCenter.Name = "Center"
 	screenGuiCenter.ScreenInsets = Enum.ScreenInsets.None
 	Icon.baseDisplayOrderChanged:Connect(function()
 		screenGuiCenter.DisplayOrder = Icon.baseDisplayOrder
