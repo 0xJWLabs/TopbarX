@@ -1,0 +1,16 @@
+[package]
+name = "0xjwlabs/topbarx"
+description = "Construct dynamic and intuitive topbar icons. Enhance the appearance and behaviour of these icons with features such as themes, dropdowns and menus."
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+exclude = ["**"]
+include = [
+    "default.project.json",
+    "src",
+    "src/**",
+    "LICENSE",
+    "wally.toml",
+]
+
+[dependencies]

@@ -1,0 +1,10 @@
+# Project place file
+/TopbarX.rbxlx
+testing/
+
+sourcemap.json
+
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
+/*.rbxlx
