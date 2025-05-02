@@ -2,8 +2,9 @@
 -- the icon (aka Widget) instance.
 -- This contains the core components of the icon such as the button, image, label and notice. It's
 -- also responsible for handling the automatic resizing of the widget (based upon image visibility and text length)
+local Types = require(script.Parent.Parent.Types)
 
-return function(icon, Icon)
+return function(icon: Types.Icon, Icon: Types.IconContainer)
 	local widget = Instance.new("Frame")
 	widget:SetAttribute("WidgetUID", icon.UID)
 	widget.Name = "Widget"
@@ -373,6 +374,20 @@ return function(icon, Icon)
 			handleLabelAndImageChanges()
 		end
 		return textureId
+	end)
+	icon:setBehaviour("IconImage", "ImageRectOffset", function(value)
+		local offset = typeof(value) == "Vector2" and value or Vector2.new(0, 0)
+		if iconImage.ImageRectOffset ~= offset then
+			handleLabelAndImageChanges()
+		end
+		return offset
+	end)
+	icon:setBehaviour("IconImage", "ImageRectSize", function(value)
+		local rectSize = typeof(value) == "Vector2" and value or Vector2.new(0, 0)
+		if iconImage.ImageRectSize ~= rectSize then
+			handleLabelAndImageChanges()
+		end
+		return rectSize
 	end)
 	icon.alignmentChanged:Connect(function(newAlignment)
 		if newAlignment == "Center" then

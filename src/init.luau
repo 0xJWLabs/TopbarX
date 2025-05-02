@@ -116,7 +116,7 @@ function Icon.getIcon(nameOrUID)
 	if match then
 		return match
 	end
-	for _, icon in pairs(iconsDict) do
+	for _, icon in iconsDict do
 		if icon.name == nameOrUID then
 			return icon
 		end
@@ -130,19 +130,19 @@ function Icon.setTopbarEnabled(bool, isInternal)
 	if not isInternal then
 		Icon.topbarEnabled = bool
 	end
-	for _, screenGui in pairs(Icon.container) do
+	for _, screenGui in Icon.container do
 		screenGui.Enabled = bool
 	end
 end
 
 function Icon.modifyBaseTheme(modifications)
 	modifications = Themes.getModifications(modifications)
-	for _, modification in pairs(modifications) do
-		for _, detail in pairs(Icon.baseTheme) do
+	for _, modification in modifications do
+		for _, detail in Icon.baseTheme do
 			Themes.merge(detail, modification)
 		end
 	end
-	for _, icon in pairs(iconsDict) do
+	for _, icon in iconsDict do
 		icon:setTheme(Icon.baseTheme)
 	end
 end
@@ -155,7 +155,7 @@ end
 -- SETUP
 task.defer(Gamepad.start, Icon)
 task.defer(Overflow.start, Icon)
-for _, screenGui in pairs(Icon.container) do
+for _, screenGui in Icon.container do
 	screenGui.Parent = playerGui
 end
 if Icon.isOldTopbar then
@@ -240,7 +240,7 @@ function Icon.new()
 	self.creationTime = os.clock()
 
 	-- Widget is the new name for an icon
-	local widget = janitor:add(require(elements.Widget)(self, Icon))
+	local widget = janitor:add(require(elements.Widget)(self :: any, Icon))
 	self.widget = widget
 	self:setAlignment()
 
@@ -379,7 +379,7 @@ function Icon.new()
 	local sourcePath = string.split(source, ".")
 	local origin = game
 	local originsScreenGui
-	for i, sourceName in pairs(sourcePath) do
+	for i, sourceName in sourcePath do
 		origin = origin:FindFirstChild(sourceName)
 		if not origin then
 			break
@@ -398,13 +398,13 @@ function Icon.new()
 	local noticeLabel = self:getInstance("NoticeLabel")
 	self.toggled:Connect(function(isSelected)
 		self.noticeChanged:Fire(self.totalNotices)
-		for childIconUID, _ in pairs(self.childIconsDict) do
+		for childIconUID, _ in self.childIconsDict do
 			local childIcon = Icon.getIconByUID(childIconUID)
 			childIcon.noticeChanged:Fire(childIcon.totalNotices)
 			if not isSelected and childIcon.isSelected then
 				-- If an icon within a menu or dropdown is also
 				-- a dropdown or menu, then close it
-				for _, _ in pairs(childIcon.childIconsDict) do
+				for _, _ in childIcon.childIconsDict do
 					childIcon:deselect("HideParentFeature", self)
 				end
 			end
@@ -532,7 +532,7 @@ function Icon:getInstance(name)
 
 	local returnChild
 	local function scanChildren(parentInstance)
-		for _, child in pairs(parentInstance:GetChildren()) do
+		for _, child in parentInstance:GetChildren() do
 			local widgetUID = child:GetAttribute("WidgetUID")
 			if widgetUID and widgetUID ~= self.UID then
 				-- This prevents instances within other icons from being recorded
@@ -573,7 +573,7 @@ function Icon:getCollective(name)
 		return collective
 	end
 	collective = {}
-	for instance, _ in pairs(self.cachedInstances) do
+	for instance, _ in self.cachedInstances do
 		if instance:GetAttribute("Collective") == name then
 			table.insert(collective, instance)
 		end
@@ -631,7 +631,7 @@ function Icon:setBehaviour(collectiveOrInstanceName, property, callback, refresh
 	self.customBehaviours[key] = callback
 	if refreshAppearance then
 		local instances = self:getInstanceOrCollective(collectiveOrInstanceName)
-		for _, instance in pairs(instances) do
+		for _, instance in instances do
 			self:refreshAppearance(instance, property)
 		end
 	end
@@ -647,7 +647,7 @@ function Icon:modifyChildTheme(modifications, modificationUID)
 	-- within its dropdown or menu)
 	self.childModifications = modifications
 	self.childModificationsUID = modificationUID
-	for childIconUID, _ in pairs(self.childIconsDict) do
+	for childIconUID, _ in self.childIconsDict do
 		local childIcon = Icon.getIconByUID(childIconUID)
 		childIcon:modifyTheme(modifications, modificationUID)
 	end
@@ -714,6 +714,16 @@ Icon.disableStateOverlay = Icon.disableOverlay
 
 function Icon:setImage(imageId, iconState)
 	self:modifyTheme({ "IconImage", "Image", imageId, iconState })
+	return self
+end
+
+function Icon:setImageRectOffset(offset, iconState)
+	self:modifyTheme({ "IconImage", "ImageRectOffset", offset, iconState })
+	return self
+end
+
+function Icon:setImageRectSize(rectSize, iconState)
+	self:modifyTheme({ "IconImage", "ImageRectSize", rectSize, iconState })
 	return self
 end
 
@@ -840,9 +850,9 @@ end
 function Icon:_updateSelectionInstances()
 	-- This is to assist with controller navigation and selection
 	-- It converts the value true to an array
-	for guiObjectOrLayerCollector, _ in pairs(self.toggleItems) do
+	for guiObjectOrLayerCollector, _ in self.toggleItems do
 		local buttonInstancesArray = {}
-		for _, instance in pairs(guiObjectOrLayerCollector:GetDescendants()) do
+		for _, instance in guiObjectOrLayerCollector:GetDescendants() do
 			if (instance:IsA("TextButton") or instance:IsA("ImageButton")) and instance.Active then
 				table.insert(buttonInstancesArray, instance)
 			end
@@ -852,7 +862,7 @@ function Icon:_updateSelectionInstances()
 end
 
 function Icon:_setToggleItemsVisible(bool, fromSource, sourceIcon)
-	for toggleItem, _ in pairs(self.toggleItems) do
+	for toggleItem, _ in self.toggleItems do
 		if not sourceIcon or sourceIcon == self or sourceIcon.toggleItems[toggleItem] == nil then
 			local property = "Visible"
 			if toggleItem:IsA("LayerCollector") then

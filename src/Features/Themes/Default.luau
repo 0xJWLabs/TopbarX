@@ -31,6 +31,8 @@ return {
 
 	-- When the icon is deselected
 	{ "IconImage", "Image", "", "Deselected" },
+	{ "IconImage", "ImageRectOffset", Vector2.new(0, 0), "Deselected" },
+	{ "IconImage", "ImageRectSize", Vector2.new(0, 0), "Deselected" },
 	{ "IconLabel", "Text", "", "Deselected" },
 	{ "IconLabel", "Position", UDim2.fromOffset(0, 0), "Deselected" }, -- 0, -1
 	{ "Widget", "MinimumWidth", 44, "Deselected" },
